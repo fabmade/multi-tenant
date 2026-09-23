@@ -52,6 +52,19 @@ class PostgresSchema extends PostgreSQL
         return true;
     }
 
+    /**
+     * The tenant tables share the system database, so DROP OWNED has to remove them
+     * before the schema can be dropped; their ownership must not be reassigned.
+     */
+    protected function dropPriviliges(IlluminateConnection $connection, array $config)
+    {
+        if ($this->userExists($connection, $config['username'])) {
+            return $connection->statement("DROP OWNED BY \"{$config['username']}\"");
+        }
+
+        return true;
+    }
+
     protected function dropDatabase(IlluminateConnection $connection, array $config)
     {
         return $connection->statement("DROP SCHEMA IF EXISTS \"{$config['schema']}\"");

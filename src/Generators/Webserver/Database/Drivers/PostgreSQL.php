@@ -62,9 +62,15 @@ class PostgreSQL implements DatabaseGenerator
         return $connection->statement("CREATE DATABASE \"{$config['database']}\"");
     }
 
+    /**
+     * Since PostgreSQL 15 only the database owner may create tables in the public schema,
+     * so the tenant user also becomes owner of its database.
+     */
     protected function grantPrivileges(IlluminateConnection $connection, array $config)
     {
-        return $connection->statement("GRANT ALL PRIVILEGES ON DATABASE \"{$config['database']}\" TO \"{$config['username']}\"");
+        return
+            $connection->statement("GRANT ALL PRIVILEGES ON DATABASE \"{$config['database']}\" TO \"{$config['username']}\"") &&
+            $connection->statement("ALTER DATABASE \"{$config['database']}\" OWNER TO \"{$config['username']}\"");
     }
 
     protected function userExists($connection, string $username): bool
@@ -130,7 +136,11 @@ class PostgreSQL implements DatabaseGenerator
     protected function dropPriviliges(IlluminateConnection $connection, array $config)
     {
         if ($this->userExists($connection, $config['username'])) {
-            return $connection->statement("DROP OWNED BY \"{$config['username']}\"");
+            // DROP OWNED keeps owned databases, so they are handed back to the system user first;
+            // objects inside the tenant database are unaffected as the system connection is used.
+            return
+                $connection->statement("REASSIGN OWNED BY \"{$config['username']}\" TO CURRENT_USER") &&
+                $connection->statement("DROP OWNED BY \"{$config['username']}\"");
         }
 
         return true;
