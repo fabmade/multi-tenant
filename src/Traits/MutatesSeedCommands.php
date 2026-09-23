@@ -17,6 +17,7 @@ namespace Hyn\Tenancy\Traits;
 use Hyn\Tenancy\Contracts\Repositories\WebsiteRepository;
 use Hyn\Tenancy\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
+use Symfony\Component\Console\Input\InputOption;
 
 trait MutatesSeedCommands
 {
@@ -35,6 +36,7 @@ trait MutatesSeedCommands
         parent::__construct($resolver);
 
         $this->setName('tenancy:' . $this->getName());
+        $this->mutateDefinition();
 
         $this->websites = app(WebsiteRepository::class);
         $this->connection = app(Connection::class);
@@ -53,22 +55,19 @@ trait MutatesSeedCommands
     }
 
     /**
-     * Get the console command options.
+     * Adds the website filter and the configured tenant seeder to the definition.
      *
-     * @return array
+     * Laravel 13 declares db:seed through a signature instead of getOptions(),
+     * so the definition is mutated directly to support both styles.
      */
-    protected function getOptions()
+    private function mutateDefinition(): void
     {
-        foreach ($options = parent::getOptions() as $i => $option) {
-            if ($option[0] === 'class') {
-                $option[4] = config('tenancy.db.tenant-seed-class', false) ?: $option[4];
+        $definition = $this->getDefinition();
 
-                $options[$i] = $option;
-            }
+        $definition->addOption(new InputOption(...$this->addWebsiteOption()));
+
+        if ($seedClass = config('tenancy.db.tenant-seed-class')) {
+            $definition->getOption('class')->setDefault($seedClass);
         }
-
-        return array_merge($options, [
-            $this->addWebsiteOption()
-        ]);
     }
 }
