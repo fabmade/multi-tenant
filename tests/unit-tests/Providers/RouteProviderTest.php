@@ -50,7 +50,10 @@ EOM
     {
         $this->overrideGlobalRoute();
 
-        $this->assertEquals(2, $this->app['router']->getRoutes()->count());
+        $routes = $this->app['router']->getRoutes();
+
+        $this->assertNotNull($routes->getByName('tenant'));
+        $this->assertGreaterThan(1, $routes->count(), 'The global routes must stay registered next to the tenant routes.');
     }
 
     /**

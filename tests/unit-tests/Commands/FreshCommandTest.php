@@ -19,7 +19,7 @@ use Hyn\Tenancy\Models\Website;
 use Illuminate\Contracts\Foundation\Application;
 use Hyn\Tenancy\Tests\Seeds\SampleSeeder;
 
-class FreshCommandTest extends DatabaseCommandTest
+class FreshCommandTest extends DatabaseCommandTestCase
 {
     /**
      * @test

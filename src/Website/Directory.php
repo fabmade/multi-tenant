@@ -74,11 +74,15 @@ class Directory implements Filesystem
     }
 
     /**
-     * @param string $path
+     * The parameter is left untyped on purpose: the Filesystem contract declares
+     * path($path) without a type since Laravel 11, so narrowing it here would break
+     * the signature compatibility.
+     *
+     * @param string|null $path
      * @param bool $local
      * @return string
      */
-    public function path(string $path = null, $local = false): string
+    public function path($path = null, $local = false): string
     {
         $prefix = "{$this->getWebsite()->uuid}/";
 
@@ -131,6 +135,42 @@ class Directory implements Filesystem
             $this->path($path),
             $contents,
             compact('visibility')
+        );
+    }
+
+    /**
+     * Store the uploaded file on the disk. Required by the Filesystem contract since Laravel 11.
+     *
+     * @param  \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string  $path
+     * @param  \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string|array|null  $file
+     * @param  mixed  $options
+     * @return string|false
+     */
+    public function putFile($path, $file = null, $options = [])
+    {
+        return $this->filesystem->putFile(
+            $this->path($path),
+            $file,
+            $options
+        );
+    }
+
+    /**
+     * Store the uploaded file on the disk with a given name. Required by the Filesystem contract since Laravel 11.
+     *
+     * @param  \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string  $path
+     * @param  \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string|array|null  $file
+     * @param  string|array|null  $name
+     * @param  mixed  $options
+     * @return string|false
+     */
+    public function putFileAs($path, $file, $name = null, $options = [])
+    {
+        return $this->filesystem->putFileAs(
+            $this->path($path),
+            $file,
+            $name,
+            $options
         );
     }
 

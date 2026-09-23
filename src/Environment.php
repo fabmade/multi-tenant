@@ -50,8 +50,6 @@ class Environment
             $this->installed() &&
             config('tenancy.hostname.auto-identification')) {
             $this->identifyHostname();
-            // Identifies the current hostname, sets the binding using the native resolving strategy.
-            $app->make(CurrentHostname::class);
         }
     }
 
@@ -83,6 +81,14 @@ class Environment
 
             return $hostname;
         });
+
+        // Resolve the binding right away so the identification happens eagerly.
+        // Up to Laravel 10 re-registering an already resolved binding did this
+        // implicitly, because Container::rebound() always resolved the abstract
+        // again. Since Laravel 11 rebound() returns early when no rebound callbacks
+        // exist (laravel/framework#53502), so without this call the identification
+        // would be deferred until something asks for CurrentHostname or Tenant.
+        $this->app->make(CurrentHostname::class);
     }
 
     /**
@@ -91,7 +97,7 @@ class Environment
      * @param Hostname|null $hostname
      * @return Hostname|null
      */
-    public function hostname(Hostname $hostname = null): ?Hostname
+    public function hostname(?Hostname $hostname = null): ?Hostname
     {
         if ($hostname !== null) {
             $this->app->instance(CurrentHostname::class, $hostname);
@@ -117,7 +123,7 @@ class Environment
      * @param Website|null $website
      * @return Tenant|null
      */
-    public function tenant(Website $website = null): ?Website
+    public function tenant(?Website $website = null): ?Website
     {
         if ($website !== null) {
             $this->app->instance(Tenant::class, $website);

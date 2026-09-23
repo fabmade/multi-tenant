@@ -50,9 +50,17 @@ class MultiDatabaseTest extends Test
         // make sure the Website model still uses the regular system name.
         $this->assertEquals(app(Connection::class)->systemName(), $this->website->getConnectionName());
 
-        $this->assertTrue(in_array(
-            $this->website->uuid,
-            $this->getConnection('secondary')->getDoctrineSchemaManager()->listDatabases()
-        ));
+        $this->assertContains($this->website->uuid, $this->listDatabases($this->getConnection('secondary')));
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function listDatabases(\Illuminate\Database\Connection $connection): array
+    {
+        return match ($connection->getDriverName()) {
+            'pgsql' => array_column($connection->select('select datname from pg_database'), 'datname'),
+            default => array_column($connection->select('show databases'), 'Database'),
+        };
     }
 }
