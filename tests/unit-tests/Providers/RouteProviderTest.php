@@ -15,13 +15,14 @@
 namespace Hyn\Tenancy\Tests\Providers;
 
 use Hyn\Tenancy\Providers\Tenants\RouteProvider;
-use Hyn\Tenancy\Tests\Test;
+use Hyn\Tenancy\Tests\TestCase;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Symfony\Component\HttpFoundation\Request as FoundationRequest;
+use PHPUnit\Framework\Attributes\Test;
 
-class RouteProviderTest extends Test
+class RouteProviderTest extends TestCase
 {
     protected function pathIdentified(string $path)
     {
@@ -43,9 +44,7 @@ EOM
         $this->activateTenant();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function overrides_global_route()
     {
         $this->overrideGlobalRoute();
@@ -56,9 +55,7 @@ EOM
         $this->assertGreaterThan(1, $routes->count(), 'The global routes must stay registered next to the tenant routes.');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function replaces_global_route()
     {
         config(['tenancy.routes.replace-global' => true]);
@@ -71,9 +68,7 @@ EOM
         $this->assertEquals(1, $this->app['router']->getRoutes()->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolves_route_from_helper()
     {
         $url = route('tenant');

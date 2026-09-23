@@ -14,11 +14,12 @@
 
 namespace Hyn\Tenancy\Tests\Website;
 
-use Hyn\Tenancy\Tests\Test;
+use Hyn\Tenancy\Tests\TestCase;
 use Hyn\Tenancy\Website\Directory;
 use Illuminate\Contracts\Foundation\Application;
+use PHPUnit\Framework\Attributes\Test;
 
-class DirectoryTest extends Test
+class DirectoryTest extends TestCase
 {
     /**
      * @var Directory
@@ -30,9 +31,7 @@ class DirectoryTest extends Test
         $this->directory = $app->make(Directory::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_switch_website()
     {
         $this->setUpWebsites(true);

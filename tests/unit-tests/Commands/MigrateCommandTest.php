@@ -16,12 +16,11 @@ namespace Hyn\Tenancy\Tests\Commands;
 
 use Hyn\Tenancy\Database\Console\Migrations\MigrateCommand;
 use Hyn\Tenancy\Models\Website;
+use PHPUnit\Framework\Attributes\Test;
 
 class MigrateCommandTest extends DatabaseCommandTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function is_ioc_bound()
     {
         $this->assertInstanceOf(
@@ -30,9 +29,7 @@ class MigrateCommandTest extends DatabaseCommandTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_migrate_on_one_tenant()
     {
         /** @var Website $otherWebsite */
@@ -49,9 +46,7 @@ class MigrateCommandTest extends DatabaseCommandTestCase
         $this->assertFalse($this->connection->get()->getSchemaBuilder()->hasTable('samples'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_migrate_on_one_tenant_by_configuration()
     {
         /** @var Website $otherWebsite */
@@ -70,9 +65,7 @@ class MigrateCommandTest extends DatabaseCommandTestCase
         $this->assertFalse($this->connection->get()->getSchemaBuilder()->hasTable('samples'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_migrate_on_tenants()
     {
         $this->migrateAndTest('migrate', function (Website $website) {
@@ -85,9 +78,7 @@ class MigrateCommandTest extends DatabaseCommandTestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function purges_connection_after_running_migrate_on_multiple_tenants()
     {
         $website = new Website();
@@ -103,9 +94,7 @@ class MigrateCommandTest extends DatabaseCommandTestCase
         $connection->shouldHaveReceived('purge')->twice();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_purge_connection_after_running_migrate_on_one_tenant()
     {
         $connection = $this->swapConnectionWithSpy();

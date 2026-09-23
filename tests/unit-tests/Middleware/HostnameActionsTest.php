@@ -19,21 +19,20 @@ use Hyn\Tenancy\Contracts\CurrentHostname;
 use Hyn\Tenancy\Contracts\Hostname;
 use Hyn\Tenancy\Environment;
 use Hyn\Tenancy\Middleware\HostnameActions;
-use Hyn\Tenancy\Tests\Test;
+use Hyn\Tenancy\Tests\TestCase;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Carbon;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use PHPUnit\Framework\Attributes\Test;
 
-class HostnameActionsTest extends Test
+class HostnameActionsTest extends TestCase
 {
     const RESPONSE = 'ok';
 
-    /**
-     * @test
-     */
+    #[Test]
     public function under_maintenance()
     {
         $this->hostname->under_maintenance_since = Carbon::now();
@@ -58,9 +57,7 @@ class HostnameActionsTest extends Test
         $this->assertEquals(static::RESPONSE, $this->middleware($this->hostname));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function middleware_allows_empty_hostname()
     {
         $middleware = new HostnameActions(app()->make(Redirector::class));
@@ -68,9 +65,7 @@ class HostnameActionsTest extends Test
         $this->assertNotNull($middleware);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function auto_identification_false()
     {
         config(['tenancy.hostname.auto-identification' => false]);

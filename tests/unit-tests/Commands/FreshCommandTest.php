@@ -18,12 +18,11 @@ use Hyn\Tenancy\Database\Console\Migrations\FreshCommand;
 use Hyn\Tenancy\Models\Website;
 use Illuminate\Contracts\Foundation\Application;
 use Hyn\Tenancy\Tests\Seeds\SampleSeeder;
+use PHPUnit\Framework\Attributes\Test;
 
 class FreshCommandTest extends DatabaseCommandTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function is_ioc_bound()
     {
         $this->assertInstanceOf(
@@ -32,9 +31,7 @@ class FreshCommandTest extends DatabaseCommandTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_fresh_on_tenants()
     {
         $this->migrateAndTest('migrate:fresh', function (Website $website) {
@@ -46,9 +43,7 @@ class FreshCommandTest extends DatabaseCommandTestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_fresh_with_seeding_on_tenants()
     {
         $this->migrateAndTest('migrate:fresh', function (Website $website) {
@@ -63,9 +58,7 @@ class FreshCommandTest extends DatabaseCommandTestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function purges_connection_after_running_fresh_on_multiple_tenants()
     {
         $website = new Website();
@@ -81,9 +74,7 @@ class FreshCommandTest extends DatabaseCommandTestCase
         $connection->shouldHaveReceived('purge')->twice();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_purge_connection_after_running_fresh_on_one_tenant()
     {
         $connection = $this->swapConnectionWithSpy();

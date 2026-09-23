@@ -14,12 +14,13 @@
 
 namespace Hyn\Tenancy\Tests\Filesystem;
 
-use Hyn\Tenancy\Tests\Test;
+use Hyn\Tenancy\Tests\TestCase;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\FilesystemManager;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Test;
 
-class ActivatesDiskTest extends Test
+class ActivatesDiskTest extends TestCase
 {
     /**
      * @var FilesystemManager
@@ -33,9 +34,7 @@ class ActivatesDiskTest extends Test
         $this->files = $app->make('filesystem');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_the_disk_during_switch()
     {
         $this->activateTenant();

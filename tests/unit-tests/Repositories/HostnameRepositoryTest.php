@@ -14,16 +14,16 @@
 
 namespace Hyn\Tenancy\Tests\Repositories;
 
-use Hyn\Tenancy\Tests\Test;
+use Hyn\Tenancy\Tests\TestCase;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Foundation\Application;
 use Hyn\Tenancy\Exceptions\ModelValidationException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class HostnameRepositoryTest extends Test
+class HostnameRepositoryTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function connect_hostname_to_website()
     {
         $this->setUpHostnames(true);
@@ -32,9 +32,7 @@ class HostnameRepositoryTest extends Test
         $this->assertEquals($this->website->id, $this->hostname->website_id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function assert_validation_fqdn_required()
     {
         $this->expectException(ModelValidationException::class);
@@ -44,9 +42,7 @@ class HostnameRepositoryTest extends Test
         $this->hostnames->create($this->hostname);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_website_relation()
     {
         $this->hostname->website_id = 999;
@@ -61,9 +57,7 @@ class HostnameRepositoryTest extends Test
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validation_under_maintenance()
     {
         try {
@@ -75,9 +69,7 @@ class HostnameRepositoryTest extends Test
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validation_redirect_to()
     {
         try {
@@ -89,9 +81,7 @@ class HostnameRepositoryTest extends Test
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validation_website_id()
     {
         try {
@@ -103,9 +93,7 @@ class HostnameRepositoryTest extends Test
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hostname_update()
     {
         $this->setUpHostnames(true);
@@ -115,9 +103,7 @@ class HostnameRepositoryTest extends Test
         $this->assertEquals($this->hostname->id, $saved->id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hostname_delete()
     {
         $this->setUpHostnames(true);
@@ -133,10 +119,8 @@ class HostnameRepositoryTest extends Test
         $this->assertFalse($this->hostname->exists);
     }
 
-    /**
-     * @test
-     * @dataProvider matchHostnames
-     */
+    #[Test]
+    #[DataProvider('matchHostnames')]
     public function hostname_regex_validation_matches(string $hostname)
     {
         $this->hostname->fqdn = $hostname;
@@ -144,10 +128,8 @@ class HostnameRepositoryTest extends Test
         $this->assertTrue($this->hostname->exists);
     }
 
-    /**
-     * @test
-     * @dataProvider noMatchHostnames
-     */
+    #[Test]
+    #[DataProvider('noMatchHostnames')]
     public function hostname_regex_validation_no_matches(string $hostname)
     {
         $this->hostname->fqdn = $hostname;

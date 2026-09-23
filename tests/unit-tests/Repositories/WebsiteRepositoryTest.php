@@ -14,14 +14,14 @@
 
 namespace Hyn\Tenancy\Tests\Repositories;
 
-use Hyn\Tenancy\Tests\Test;
+use Hyn\Tenancy\Tests\TestCase;
 use Illuminate\Contracts\Foundation\Application;
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\Test;
 
-class WebsiteRepositoryTest extends Test
+class WebsiteRepositoryTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_website()
     {
         $this->websites->create($this->website);
@@ -29,9 +29,7 @@ class WebsiteRepositoryTest extends Test
         $this->assertTrue($this->website->exists);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updates_website()
     {
         $this->setUpWebsites(true);
@@ -41,10 +39,8 @@ class WebsiteRepositoryTest extends Test
         $this->assertEquals($this->website->id, $saved->id);
     }
 
-    /**
-     * @test
-     * @depends creates_website
-     */
+    #[Test]
+    #[Depends('creates_website')]
     public function deletes_website()
     {
         $this->setUpWebsites(true);
@@ -59,9 +55,7 @@ class WebsiteRepositoryTest extends Test
         $this->assertFalse($this->website->exists);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setting_custom_uuid()
     {
         $this->website->uuid = 'foo';

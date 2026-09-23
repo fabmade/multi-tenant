@@ -16,12 +16,11 @@ namespace Hyn\Tenancy\Tests\Commands;
 
 use Hyn\Tenancy\Database\Console\Migrations\RefreshCommand;
 use Hyn\Tenancy\Models\Website;
+use PHPUnit\Framework\Attributes\Test;
 
 class RefreshCommandTest extends DatabaseCommandTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function is_ioc_bound()
     {
         $this->assertInstanceOf(
@@ -30,9 +29,7 @@ class RefreshCommandTest extends DatabaseCommandTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_refresh_on_tenants()
     {
         $this->migrateAndTest('migrate');
